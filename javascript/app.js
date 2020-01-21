@@ -14,44 +14,39 @@ const rNumerals = {
     one: "I",
     four: "IV",
     five: "V",
-    nine: "IX",
-    ten: "X"
+    nine: "IX"
   } ,
   "2": {
-    ten: "X",
+    one: "X",
     four: "XV",
     five: "L",
     nine: "XC"
   },
   "3": {
-    ten: "C",
+    one: "C",
     four: "CD",
     five: "D",
     nine: "CM"
   },
   "4": {
-    ten: "M",
+    one: "M",
     four: "M-v",
     five: "-v",
     nine: "M-x"
   },
   "5": {
-    ten: "-x",
+    one: "-x",
     four: "-x-l",
     five: "-l",
     nine: "-x-c"
   },
   "6": {
-    ten: "-c",
+    one: "-c",
     four: "-c-d",
     five: "-d",
     nine: "-c-m"
   }
-
 }
-
-
-
 
 const input = document.getElementById("numberInputValue");
 const submitUserNum = document.getElementById("userNum");
@@ -61,17 +56,19 @@ const outputRomanNumeralDiv = document.getElementById("romanNumeral");
 
 const showErrMessage = () => {
   const errMessage = document.createElement("h3");
-
-
   errMessage.textContent = "Invalid input";
   inputDiv.appendChild(errMessage);
-}
+};
 
 
 const convertNumToNumeral = (num, place, roman) => {
 
   let number = "";
-  if (num > 5 && num < 9){
+  if (num === 0){
+    number = "";
+    return number;
+  }
+  if (num < 5){
     if (num === 4){
       number += roman[place].four;
     } else {
@@ -79,46 +76,44 @@ const convertNumToNumeral = (num, place, roman) => {
         number += roman[place].one;
       }
     }
-  } else {
-    if (num === 9) {
+  } else if (num > 5 && num < 9) {
+    number += roman[place].five;
 
-      number += roman[place].nine;
-    } else if (num === 5) {
-      number += roman[place].five;
-    } else {
-      number += roman[place].five;
-      for (let i = 0; i < num; i++) {
-        number += roman[place].one;
-      }
+    for (let i = 0; i < num - 5; i++){
+      number += roman[place].one;
     }
+  } else if (num === 9) {
+    number += roman[place].nine;
 
+  } else {
+    number += roman[place].five;
+  }
 
+    console.log(number);
     return number;
-}
+};
 
 input.addEventListener("input", (event) => {
 
   let eventValArr = event.target.value;
   for (let i = 0; i < eventValArr.length; i++) {
-    if (typeof(eventValArr[i]) !== "Number"){
+    console.log(typeof(eventValArr[i]));
+    if (typeof(Number(eventValArr[i])) !== "number"){
       showErrMessage();
       event.target.value = "";
       return;
     }
+
+
   }
-
-
-
-  inputDiv.removeChild(inputDiv.childNodes[1]);
-
-})
+});
 
 
 submitUserNum.addEventListener("click", (event) => {
   const number = input.value;
   const numberArray = number.split("");
   let numberLen = numberArray.length;
-
+  console.log(numberLen);
 
   outputRomanNumeralDiv.removeChild(outputRomanNumeralDiv.childNodes[0]);
   let convertedNumber = "";
@@ -126,11 +121,11 @@ submitUserNum.addEventListener("click", (event) => {
   for (let i = 0; i < numberArray.length; i++) {
     convertedNumber += convertNumToNumeral(Number(numberArray[i]), String(numberLen), rNumerals);
     numberLen -= 1;
+    console.log(convertedNumber);
   }
-
-
 
   const romanNumeral = document.createElement("h3");
   romanNumeral.textContent = convertedNumber;
   outputRomanNumeralDiv.appendChild(romanNumeral);
-})
+  input.value = "";
+});
